@@ -42,9 +42,9 @@ GLuint GarurumonTexture = NULL;
 GLuint MetalGarurumonTexture = NULL;
 
 // Mesh pointers
-CGPolyMesh *meshPointer0=NULL;
-CGPolyMesh *meshPointer1=NULL;
-CGPolyMesh *meshPointer2=NULL;
+CGPolyMesh *meshPointer0 = NULL;
+CGPolyMesh *meshPointer1 = NULL;
+CGPolyMesh *meshPointer2 = NULL;
 
 CGMaterial GabumonMat;
 CGMaterial GarurumonMat;
@@ -111,7 +111,7 @@ void report_version(void) {
 
 	glGetIntegerv(GL_MAJOR_VERSION, &majorVersion);
 	glGetIntegerv(GL_MINOR_VERSION, &minorVersion);
-	
+
 	cout << "OpenGL version " << majorVersion << "." << minorVersion << "\n\n";
 }
 
@@ -121,9 +121,9 @@ void init(void) {
 
 	// initialise glew library
 	GLenum err = glewInit();
-	
+
 	// ensure glew was initialised successfully before proceeding
-	if (err==GLEW_OK)
+	if (err == GLEW_OK)
 		cout << "GLEW initialised okay\n";
 	else
 		cout << "GLEW could not be initialised\n";
@@ -166,7 +166,7 @@ void init(void) {
 	mainCamera = new GUPivotCamera(0.0f, 0.0f, 5.0f, 55.0f, 1.0f, 0.1f);
 
 	//FPSCamera = new GUFirstPersonCamera();
-	
+
 
 #pragma region Load_Models_and_Textures
 
@@ -176,7 +176,7 @@ void init(void) {
 
 	//load Gabumon model texture
 	GabumonTexture = loadTexture(wstring(L"Resources\\Textures\\Gabumon.png"));
-	GabumonModel->setTextureForModel( GabumonTexture);
+	GabumonModel->setTextureForModel(GabumonTexture);
 
 	// load  Garurumon model
 	GarurumonModel = new CGModel();
@@ -197,7 +197,7 @@ void init(void) {
 
 #pragma endregion 
 
-	
+
 	//
 	// Setup Lighting
 	//
@@ -227,11 +227,11 @@ void init(void) {
 void display(void) {
 	glEnable(GL_TEXTURE_2D);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+
 	// get camera view and projection transforms
 	GUMatrix4 viewMatrix = mainCamera->viewTransform();
 	GUMatrix4 projMatrix = mainCamera->projectionTransform();
-	
+
 #if 1
 
 	// 3D models import using CGImport use the older fixed function pipeline of OpenGL 2.1
@@ -242,34 +242,34 @@ void display(void) {
 	// set fixed-function projection transform
 	glMatrixMode(GL_PROJECTION);
 	glLoadMatrixf((GLfloat*)&projMatrix);
-	
+
 	// set fixed-function model-view transform
 	glMatrixMode(GL_MODELVIEW);
 	GUMatrix4 T = viewMatrix * GUMatrix4::rotationMatrix(0.0f, 0.0f, theta);
 	glLoadMatrixf((GLfloat*)&T);
 
 	// Render point that represents the light source
-	//if (showLight) {
-	//	glPointSize(5.0f);
-	//	glColor3ub(255, 255, 255);
-	//	glBegin(GL_POINTS);
-	//	glVertex3f(lightPosition[0], lightPosition[1], lightPosition[2]);
-	//	glEnd();
+	if (showLight) {
+		glPointSize(5.0f);
+		glColor3ub(255, 255, 255);
+		glBegin(GL_POINTS);
+		glVertex3f(lightPosition[0], lightPosition[1], lightPosition[2]);
+		glEnd();
 
 
-	//	// Render line that represents direction of light
-	//	glEnable(GL_LINE_STIPPLE);
-	//	glLineStipple(1, 0xf0f0);
+		// Render line that represents direction of light
+		glEnable(GL_LINE_STIPPLE);
+		glLineStipple(1, 0xf0f0);
 
-	//	glBegin(GL_LINES);
+		glBegin(GL_LINES);
 
-	//	glVertex3f(lightPosition[0], lightPosition[1], lightPosition[2]);
-	//	glVertex3f(lightPosition[0]+lightDirection[0], lightPosition[1]+lightDirection[1], lightPosition[2]+lightDirection[2]);
-	//		
-	//	glEnd();
+		glVertex3f(lightPosition[0], lightPosition[1], lightPosition[2]);
+		glVertex3f(lightPosition[0] + lightDirection[0], lightPosition[1] + lightDirection[1], lightPosition[2] + lightDirection[2]);
 
-	//	glDisable(GL_LINE_STIPPLE);
-	//}
+		glEnd();
+
+		glDisable(GL_LINE_STIPPLE);
+	}
 
 
 	glEnable(GL_LIGHTING);
@@ -327,7 +327,7 @@ void display(void) {
 	glDisable(GL_LIGHTING);
 
 #endif
-	
+
 
 	glutSwapBuffers();
 }
@@ -335,16 +335,17 @@ void display(void) {
 
 void mouseButtonDown(int button_id, int state, int x, int y) {
 
-	if (button_id==GLUT_LEFT_BUTTON) {
-		
-		if (state==GLUT_DOWN) {
+	if (button_id == GLUT_LEFT_BUTTON) {
+
+		if (state == GLUT_DOWN) {
 
 			mouse_x = x;
 			mouse_y = y;
 
 			mDown = true;
 
-		} else if (state == GLUT_UP) {
+		}
+		else if (state == GLUT_UP) {
 
 			mDown = false;
 		}
@@ -361,18 +362,18 @@ void mouseMove(int x, int y) {
 		// rotate camera around the origin
 		if (mainCamera)
 			mainCamera->transformCamera((float)-dy, (float)-dx, 0.0f);
-		
+
 		mouse_x = x;
 		mouse_y = y;
 	}
-	
+
 }
 
 void mouseWheelUpdate(int wheel_number, int direction, int x, int y) {
 
 	if (mainCamera) {
-		
-		if (direction<0)
+
+		if (direction < 0)
 			mainCamera->scaleCameraRadius(1.1f);
 		else if (direction>0)
 			mainCamera->scaleCameraRadius(0.9f);
@@ -380,74 +381,71 @@ void mouseWheelUpdate(int wheel_number, int direction, int x, int y) {
 }
 
 void keyDown(unsigned char key, int x, int y) {
-	
-	switch((int)key) {
 
-		// example keyboard input
-		case'r':
-			theta = 0.0f;
-			glutPostRedisplay();
-		break; 
-	
-			// Change orientation of light's position (move around the object on xz plane)
-		case 'j':
-			break;
+	switch ((int)key) {
+		// keyboard input
+	case'r':
+		theta = 0.0f;
+		glutPostRedisplay();
+		break;
 
-		case 'k':
-			break;
-
-			// Change linear attenuation parameters
-		//case 'q':
-		//	ca *= 1.1f;
-		//	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, ca);
-		//	glutPostRedisplay();
+		//	// Change orientation of light's position (move around the object on xz plane)
+		//case 'j':
 		//	break;
 
-		//case 'a':
-		//	ca *= 0.9f;
-		//	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, ca);
-		//	glutPostRedisplay();
+		//case 'k':
 		//	break;
 
-		// Change light display flags
-		case 'l':
-			showLight = !showLight;
-			glutPostRedisplay();
-			break;
+	case 'q':// Change linear attenuation parameters
+		ca *= 1.1f;
+		glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, ca);
+		glutPostRedisplay();
+		break;
 
-		case 'z':
+	case 'a':
+		ca *= 0.9f;
+		glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, ca);
+		glutPostRedisplay();
+		break;
 
-			break;
-		case 'x':
+	case 'l':// Change light display flags
+		showLight = !showLight;
+		glutPostRedisplay();
+		break;
 
-			break;
+	case 'z':
 
-		case VK_ESCAPE:	// Escape
-			quit_app = true;
-			break;
+		break;
+	case 'x':
+
+		break;
+
+	case VK_ESCAPE:	// Escape
+		quit_app = true;
+		break;
 	}
-	
+
 }
 
 
 int main(int argc, char **argv) {
-	
+
 	// initialise GLUT and COM
 	glutInit(&argc, argv);
 	initCOM();
-	
+
 	// declare OpenGL context properties
-	glutInitContextVersion(3,3);
-	
-	glutInitContextProfile (GLUT_COMPATIBILITY_PROFILE);
+	glutInitContextVersion(3, 3);
+
+	glutInitContextProfile(GLUT_COMPATIBILITY_PROFILE);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
-	
+
 	// setup window
 	glutInitWindowSize(800, 800);
 	glutInitWindowPosition(0, 0);
-	
+
 	glutCreateWindow("Welcome to the Digiverse!");
-	
+
 	// register callback functions with GLUT
 	glutDisplayFunc(display);
 	glutKeyboardFunc(keyDown);
@@ -457,13 +455,11 @@ int main(int argc, char **argv) {
 
 	// initialise OpenGL environment, load models etc...
 	init();
-	
+
 
 	// main rendering loop
 	while (!quit_app) {
-
 		glutMainLoopEvent(); // internal glut processing (events etc)
-
 		// do our own per-frame processing
 		theta += 0.00f;
 		lightTheta -= pi / 350.0f;
