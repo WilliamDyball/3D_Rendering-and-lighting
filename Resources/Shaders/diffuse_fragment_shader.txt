@@ -1,0 +1,35 @@
+// Phong fragment shader
+
+uniform vec4		lposition;
+uniform vec4		lambient;
+uniform vec4		ldiffuse;
+uniform vec4		lspecular=vec4(1,1,1,1);
+uniform vec3		lattenuation; // x=constant, y=linear, z=quadratic (x<0 means light is not active)
+uniform sampler2D color_texture;
+varying vec3		normal, lightDir,eyeVec;
+
+void main(void)
+{
+
+	float d = length(lightDir);
+	float a = 1.0 / (lattenuation.x + lattenuation.y*d + lattenuation.z*d*d);
+	
+	
+	vec4 texColour= texture2D(color_texture, gl_TexCoord[0].st);
+	vec4 final_color = lambient * texColour*gl_FrontMaterial.ambient;
+
+	vec3 N = normalize(normal);
+	vec3 L = normalize(lightDir);
+	
+	float lambertTerm = dot(N, L);
+	final_color += a * ldiffuse * texColour * gl_FrontMaterial.diffuse*lambertTerm;	
+		
+		vec3 E = normalize(eyeVec);
+		vec3 R = reflect(-L, N);
+		
+		float specular = pow(max(dot(R, E), 0.0), 	gl_FrontMaterial.shininess);
+		         
+		final_color += lspecular * gl_FrontMaterial.specular * 	specular * a;
+
+	gl_FragColor = final_color;
+}

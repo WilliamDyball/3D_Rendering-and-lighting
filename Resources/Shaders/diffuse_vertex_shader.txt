@@ -1,0 +1,21 @@
+// Diffuse vertex shader
+
+// specify uniform variables shared with fragment shader
+uniform vec4		lposition;
+uniform vec4		lambient;
+uniform vec4		ldiffuse;
+uniform vec3		lattenuation; // x=constant, y=linear, z=quadratic (x<0 means light is not active)
+uniform sampler2D color_texture;
+varying vec3		normal, lightDir, eyeVec;
+
+void main(void)
+{	
+	normal = gl_NormalMatrix * gl_Normal; // normal vector in eye coordinates
+	
+	vec3 vertex = vec3(gl_ModelViewMatrix * gl_Vertex); // vertex in eye coordinates (map to vec3 since gl_Vertex is a vec4)
+	
+	lightDir = vec3(lposition.xyz - vertex);
+	eyeVec = -vertex;
+	gl_TexCoord[0] = gl_MultiTexCoord0;
+	gl_Position = ftransform();
+}
